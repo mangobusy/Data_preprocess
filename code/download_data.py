@@ -1,29 +1,40 @@
 
 from huggingface_hub import snapshot_download
-'''
+
 # 直接将仓库文件下载到本地目录
-local_dir = "/data/Shizihui/dataset/LJSpeech"
+local_dir = "/data/Shizihui/dataset/HiFi-tts"
 snapshot_download(
-    repo_id="flexthink/ljspeech",
+    repo_id="MikhailT/hifi-tts",
     repo_type="dataset",
     local_dir=local_dir,
     local_dir_use_symlinks=False  # 确保下载的是实体文件而不是链接
 )
 
 print(f"下载完成，数据保存在 {local_dir}")
-'''
 
+'''
+from huggingface_hub import snapshot_download
+
+local_dir = snapshot_download(
+    repo_id="model-scope/CosyVoice-300M",   
+    local_dir="/data/Shizihui/Data_preprocess/ckp/CosyVoice-300M",
+    local_dir_use_symlinks=False
+)
+print(local_dir)
+'''
+'''
+# 下载单个文件
 from huggingface_hub import hf_hub_download
 
 path = hf_hub_download(
     repo_id="model-scope/CosyVoice-300M",
     filename="speech_tokenizer_v1.onnx",
     repo_type="model",
-    local_dir="/data/Shizihui/Data_preprocess/ckp",
+    local_dir="/data/Shizihui/Data_preprocess/ckp/CosyVoice-300M",
     local_dir_use_symlinks=False,
 )
 print("Downloaded to:", path)
-
+'''
 
 
 # # !pip install openai-whisper
