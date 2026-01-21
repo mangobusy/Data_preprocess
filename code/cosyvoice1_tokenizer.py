@@ -4,8 +4,8 @@ from __future__ import annotations
 
 Example:
     python cosyvoice1_tokenizer.py \
-        --input-jsonl /data/Shizihui/dataset/LJSpeech/ljspeech_train.json \
-        --output-jsonl /data/Shizihui/Data_preprocess/LJSpeech/ljspeech_audio_tokens.jsonl \
+        --input-jsonl /data/Shizihui/dataset/LJSpeech/ljspeech_valid.json \
+        --output-jsonl /data/Shizihui/Data_preprocess/LJSpeech/ljspeech_val_audio_tokens.jsonl \
         --audio-dir /data/Shizihui/dataset/LJSpeech/wavs \
         --model-dir /data/Shizihui/Data_preprocess/ckp/CosyVoice-300M
 """
@@ -18,8 +18,8 @@ python cosyvoice1_tokenizer.py \
 '''
 '''
 python cosyvoice1_tokenizer.py \
-        --input-jsonl /data/Shizihui/dataset/HiFi-tts/hifi-tts_train_1.jsonl \
-        --output-jsonl /data/Shizihui/Data_preprocess/HiFi_TTS/hifitts_audio_tokens.jsonl \
+        --input-jsonl /data/Shizihui/Data_preprocess/HiFi_TTS/other/hifi-tts_train_4.jsonl \
+        --output-jsonl /data/Shizihui/Data_preprocess/HiFi_TTS/hifitts_audio_tokens_4.jsonl \
         --audio-dir /data/Shizihui/dataset/HiFi-tts/audio/train_clean \
         --model-dir /data/Shizihui/Data_preprocess/ckp/CosyVoice-300M
 '''
@@ -99,11 +99,13 @@ def load_frontend(model_dir: str, cosyvoice_version: int) -> CosyVoiceFrontEnd:
 def resolve_audio_path(entry: dict, args: argparse.Namespace, input_path: Path, dataset) -> Path:
     if args.audio_dir:  # train_clean
         key = entry.get(args.key_field) # "key": 6097_clean/8992/presentpictureofnsw_03_mann_0786.wav
-        if dataset == 'stroytts':
+        if dataset == 'storytts':
             episode = key.split("-")[2]
             return Path(args.audio_dir) / episode /f"{key}{args.audio_ext}"
         elif dataset == 'hifitts':
             return Path(args.audio_dir) / f"{key}"
+        elif dataset == 'LJSpeech':
+            return Path(args.audio_dir) / f"{key}{args.audio_ext}"
         if not key:
             raise KeyError(f"Missing key field: {args.key_field}")
         
@@ -139,7 +141,7 @@ def file_Format_Adaptation(input_file, clean_file, dataset):
                         }
                     out_f.write(json.dumps(new_item, ensure_ascii=False) + "\n")
         
-        elif dataset=='stroytts':
+        elif dataset=='storytts':
             with open(clean_file, 'w', encoding='utf-8') as out_f:
                 for line in tqdm(f):
                     line = line.strip()
@@ -174,15 +176,18 @@ def extract_speech_tokens(frontend: CosyVoiceFrontEnd, audio_path: Path, device:
         return speech_token.squeeze(0).tolist()
 
 def main() -> None:
-    dataset = "stroytts"  # "hifitts"
+    dataset = "LJSpeech"  # "hifitts"
     args = parse_args()
     raw_file = Path(args.input_jsonl)
-    if dataset == 'stroytts':
+    if dataset == 'storytts':
         clean_file = Path("/data/Shizihui/Data_preprocess/StoryTTS/other/storytts_train.jsonl")
         file_Format_Adaptation(raw_file, clean_file, dataset)
     elif dataset == 'hifitts':
         clean_file = raw_file
-    # breakpoint()
+    elif dataset == 'LJSpeech':
+        clean_file = Path("/data/Shizihui/Data_preprocess/LJSpeech/other/val/ljspeech_val.jsonl")
+        file_Format_Adaptation(raw_file, clean_file, dataset)
+    breakpoint()
     output_path = Path(args.output_jsonl)
 
     model_dir = resolve_model_dir(args.model_dir)
@@ -196,8 +201,8 @@ def main() -> None:
     ) as output_file:
         # for line in tqdm(clean_file, desc="Tokenizing", unit="line"):
         for idx, line in enumerate(tqdm(clean_file, desc="Tokenizing", unit="line"), start=1):
-            if idx < 3633:
-                continue
+            # if idx < 12495:
+            #     continue
             line = line.strip()
             if not line:
                 continue

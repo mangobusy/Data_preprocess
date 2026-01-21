@@ -16,20 +16,20 @@ def merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl):
 
     print("2. 正在合并数据...")
     # 提取需要的列
-    df_emotion_subset = df_emotion[['text', 'V_pred', 'A_pred']]
+    df_emotion_subset = df_emotion[['ID', 'text', 'V_pred', 'A_pred']]
 
     # 根据 ID 合并
-    merged_df = pd.merge(df_emotion_subset, df_token, on='text', how='inner')
-
+    merged_df = pd.merge(df_emotion_subset, df_token, on='ID', how='inner')
+    breakpoint()
     print("3. 构建目标格式...")
     output_df = pd.DataFrame()
 
     # ID 转为整数
-    output_df['key'] = merged_df['ID'].astype(int)
+    output_df['key'] = merged_df['key']
 
     # 文本内容
-    output_df['source_text'] = merged_df['text']
-    output_df['target_text'] = merged_df['text']
+    output_df['source_text'] = merged_df['text_x']
+    output_df['target_text'] = merged_df['text_x']
 
     # Emotion 组合成列表
     output_df['emotion'] = merged_df[['V_pred', 'A_pred']].values.tolist()
@@ -51,8 +51,8 @@ def merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl):
     print(f"验证数据类型: 第一条 token 的类型是 {type(first_token)} (应该是 <class 'list'>)")
 
 if __name__ == "__main__":
-    csv_emotion = '/root/autodl-tmp/data/MsceneSpeech/data/MsceneSpeech_train_emotion.csv'
-    csv_audio_token = '/root/autodl-tmp/data/MsceneSpeech/data/MsceneSpeech_with_audio_token1.csv'
-    output_jsonl = '/root/autodl-tmp/data/MsceneSpeech/data/MsceneSpeech_train_11111.jsonl'
+    csv_emotion = '/data/Shizihui/Data_preprocess/LJSpeech/other/ljspeech_emotion.csv'
+    csv_audio_token = '/data/Shizihui/Data_preprocess/LJSpeech/other/ljspeech_audio_tokens.csv'
+    output_jsonl = '/data/Shizihui/Data_preprocess/LJSpeech/LJSpeech_train_data.jsonl'
 
     merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl)

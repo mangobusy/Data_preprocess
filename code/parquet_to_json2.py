@@ -72,8 +72,8 @@ def extract_parquet_to_flac(
 if __name__ == "__main__":
     # 配置路径
   
-    PARQUET_FILE = "/data/Shizihui/dataset/HiFi-tts/data/train.clean-00024-of-00035-019b9d9e9771173c.parquet"   # 修改这里
-    JSONL_OUTPUT = "/data/Shizihui/dataset/HiFi-tts/hifi-tts_train_3.jsonl"
+    PARQUET_FILE = "/data/Shizihui/dataset/HiFi-tts/data/train.clean-00034-of-00035-2e0606e24bdfa88a.parquet"   # 修改这里
+    JSONL_OUTPUT = "/data/Shizihui/Data_preprocess/HiFi_TTS/other/hifi-tts_train_4.jsonl"
     AUDIO_DIR = "/data/Shizihui/dataset/HiFi-tts/audio/train_clean"
 
     extract_parquet_to_flac(PARQUET_FILE, JSONL_OUTPUT, AUDIO_DIR)
