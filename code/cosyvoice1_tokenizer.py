@@ -18,9 +18,9 @@ python cosyvoice1_tokenizer.py \
 '''
 '''
 python cosyvoice1_tokenizer.py \
-        --input-jsonl /data/Shizihui/Data_preprocess/HiFi_TTS/other/hifi-tts_train_4.jsonl \
-        --output-jsonl /data/Shizihui/Data_preprocess/HiFi_TTS/hifitts_audio_tokens_4.jsonl \
-        --audio-dir /data/Shizihui/dataset/HiFi-tts/audio/train_clean \
+        --input-jsonl /data/Shizihui/Data_preprocess/HiFi_TTS/other/hifi-tts_val.jsonl \
+        --output-jsonl /data/Shizihui/Data_preprocess/HiFi_TTS/hifitts_audio_tokens_val.jsonl \
+        --audio-dir /data/Shizihui/dataset/HiFi-tts/audio/val_clean \
         --model-dir /data/Shizihui/Data_preprocess/ckp/CosyVoice-300M
 '''
 
@@ -176,7 +176,7 @@ def extract_speech_tokens(frontend: CosyVoiceFrontEnd, audio_path: Path, device:
         return speech_token.squeeze(0).tolist()
 
 def main() -> None:
-    dataset = "LJSpeech"  # "hifitts"
+    dataset = "hifitts"  # "hifitts"
     args = parse_args()
     raw_file = Path(args.input_jsonl)
     if dataset == 'storytts':
@@ -201,7 +201,7 @@ def main() -> None:
     ) as output_file:
         # for line in tqdm(clean_file, desc="Tokenizing", unit="line"):
         for idx, line in enumerate(tqdm(clean_file, desc="Tokenizing", unit="line"), start=1):
-            # if idx < 12495:
+            # if idx <= 26336:
             #     continue
             line = line.strip()
             if not line:
