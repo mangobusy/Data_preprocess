@@ -1,0 +1,2 @@
+HiFi_TTS/HiFi_TTS_data.jsonl filter=lfs diff=lfs merge=lfs -text
+HiFi_TTS/other/audio_token/hifitts_audio_tokens.csv filter=lfs diff=lfs merge=lfs -text

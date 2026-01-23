@@ -4,13 +4,11 @@ import ast  # 关键库：用于把 "[1, 2]" 这种字符串变成真正的列�
 def merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl):
     print("1. 正在读取 CSV 文件...")
     
-    # --- 关键修改点在这里 ---
     # 使用 converters 参数，读取时直接把字符串转为列表
     df_token = pd.read_csv(
         csv_audio_token, 
         converters={'audio_token': ast.literal_eval} 
     )
-    # -----------------------
     
     df_emotion = pd.read_csv(csv_emotion)
 
@@ -23,8 +21,8 @@ def merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl):
     breakpoint()
     print("3. 构建目标格式...")
     output_df = pd.DataFrame()
-
-    # ID 转为整数
+    # 关键字段赋值
+    # key 字段  
     output_df['key'] = merged_df['key']
 
     # 文本内容
@@ -37,7 +35,7 @@ def merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl):
     # Audio Token (因为读取时已经转了，这里直接赋值就是列表)
     output_df['answer_cosyvoice_speech_token'] = merged_df['audio_token']
 
-    # 导出文件名
+    # 导出文件
     
     print(f"4. 正在写入 {output_jsonl} ...")
     
@@ -51,8 +49,8 @@ def merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl):
     print(f"验证数据类型: 第一条 token 的类型是 {type(first_token)} (应该是 <class 'list'>)")
 
 if __name__ == "__main__":
-    csv_emotion = '/data/Shizihui/Data_preprocess/LJSpeech/other/ljspeech_emotion.csv'
-    csv_audio_token = '/data/Shizihui/Data_preprocess/LJSpeech/other/ljspeech_audio_tokens.csv'
-    output_jsonl = '/data/Shizihui/Data_preprocess/LJSpeech/LJSpeech_train_data.jsonl'
+    csv_emotion = '/data/Shizihui/Data_preprocess/HiFi_TTS/other/hifitts_emotion.csv'
+    csv_audio_token = '/data/Shizihui/Data_preprocess/HiFi_TTS/other/audio_token/hifitts_audio_tokens.csv'
+    output_jsonl = '/data/Shizihui/Data_preprocess/HiFi_TTS/HiFi_TTS_data.jsonl'
 
     merge_csv_to_jsonl(csv_emotion, csv_audio_token, output_jsonl)
