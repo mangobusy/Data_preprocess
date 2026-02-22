@@ -34,11 +34,11 @@ def extract_parquet_to_flac(
             if original_filename.startswith("audio/"):
                 relative_path_flac = original_filename[6:]  # 结果: '6097_clean/14411/nada.flac'
             else:
-                relative_path_flac = original_filename
-
+                relative_path_flac = os.path.basename(original_filename)
+            # print("relative_path_flac:",relative_path_flac)
             base_path = os.path.splitext(relative_path_flac)[0] 
             relative_path = f"{base_path}.wav"
-
+            # print("relative_path:",relative_path)
             save_full_path = os.path.join(audio_output_dir, relative_path)
             # breakpoint()
             # 获取文件所在的目录路径 (例如 .../6097_clean/14411)
@@ -59,8 +59,8 @@ def extract_parquet_to_flac(
             # 这里我示范更新为新的文件名，以便后续训练代码能找到它
             meta_entry = {
                 'key': relative_path,                    
-                'source_text': row['text_normalized'],
-                'target_text': row['text_normalized']
+                'source_text': row['text'],
+                'target_text': row['text']
             }
 
             f_out.write(json.dumps(meta_entry, ensure_ascii=False) + "\n")
@@ -71,12 +71,15 @@ def extract_parquet_to_flac(
 
 if __name__ == "__main__":
     # 配置路径
-  
-    PARQUET_FILE = "/data/Shizihui/dataset/HiFi-tts/data/train.clean-00034-of-00035-2e0606e24bdfa88a.parquet"   # 修改这里
-    JSONL_OUTPUT = "/data/Shizihui/Data_preprocess/HiFi_TTS/other/hifi-tts_train_4.jsonl"
-    AUDIO_DIR = "/data/Shizihui/dataset/HiFi-tts/audio/train_clean"
+    AUDIO_DIR = "/data/Shizihui/dataset/LibriSpeech/clean/train.360/audio"
+    JSONL_OUTPUT = "/data/Shizihui/dataset/LibriSpeech/clean/train.360/librispeech-train360.jsonl"
+    for i in range(41,48):
+        PARQUET_FILE = f"/data/Shizihui/dataset/LibriSpeech/clean/train.360/{i:04d}.parquet"  # 修改这里
+        # print("Start to process: ", PARQUET_FILE)
+        extract_parquet_to_flac(PARQUET_FILE, JSONL_OUTPUT, AUDIO_DIR)
+    
 
-    extract_parquet_to_flac(PARQUET_FILE, JSONL_OUTPUT, AUDIO_DIR)
+    
 
 '''
 

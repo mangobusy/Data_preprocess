@@ -23,7 +23,20 @@ python cosyvoice1_tokenizer.py \
         --audio-dir /data/Shizihui/dataset/HiFi-tts/audio/val_clean \
         --model-dir /data/Shizihui/Data_preprocess/ckp/CosyVoice-300M
 '''
-
+'''
+python cosyvoice1_tokenizer.py \
+        --input-jsonl /data/Shizihui/Data_preprocess/Blizzard/raw.jsonl \
+        --output-jsonl /data/Shizihui/Data_preprocess/Blizzard/blizzard_audio_tokens.jsonl \
+        --audio-dir /data/Shizihui/dataset/blizzard_release_2017/audio \
+        --model-dir /data/Shizihui/Data_preprocess/ckp/CosyVoice-300M
+'''
+'''
+python cosyvoice1_tokenizer.py \
+        --input-jsonl /data/Shizihui/Data_preprocess/LibriSpeech/librispeech-val.jsonl \
+        --output-jsonl /data/Shizihui/Data_preprocess/LibriSpeech/librispeech-val_audio_tokens.jsonl \
+        --audio-dir /data/Shizihui/dataset/LibriSpeech/clean/validation/audio \
+        --model-dir /data/Shizihui/Data_preprocess/ckp/CosyVoice-300M
+'''
 
 import argparse
 import json
@@ -106,6 +119,11 @@ def resolve_audio_path(entry: dict, args: argparse.Namespace, input_path: Path, 
             return Path(args.audio_dir) / f"{key}"
         elif dataset == 'LJSpeech':
             return Path(args.audio_dir) / f"{key}{args.audio_ext}"
+        elif dataset == "Blizzard":
+            return Path(args.audio_dir) / f"{key}{args.audio_ext}"  # /data/Shizihui/dataset/blizzard_release_2017/audio 
+        elif dataset == 'librispeech':
+            return Path(args.audio_dir) / f"{key}"
+
         if not key:
             raise KeyError(f"Missing key field: {args.key_field}")
         
@@ -176,7 +194,7 @@ def extract_speech_tokens(frontend: CosyVoiceFrontEnd, audio_path: Path, device:
         return speech_token.squeeze(0).tolist()
 
 def main() -> None:
-    dataset = "hifitts"  # "hifitts"
+    dataset = "librispeech"  # "hifitts"
     args = parse_args()
     raw_file = Path(args.input_jsonl)
     if dataset == 'storytts':
@@ -187,7 +205,10 @@ def main() -> None:
     elif dataset == 'LJSpeech':
         clean_file = Path("/data/Shizihui/Data_preprocess/LJSpeech/other/val/ljspeech_val.jsonl")
         file_Format_Adaptation(raw_file, clean_file, dataset)
-    breakpoint()
+    elif dataset == "Blizzard":
+        clean_file = raw_file
+    elif dataset == "librispeech":
+        clean_file = raw_file
     output_path = Path(args.output_jsonl)
 
     model_dir = resolve_model_dir(args.model_dir)
@@ -201,8 +222,8 @@ def main() -> None:
     ) as output_file:
         # for line in tqdm(clean_file, desc="Tokenizing", unit="line"):
         for idx, line in enumerate(tqdm(clean_file, desc="Tokenizing", unit="line"), start=1):
-            # if idx <= 26336:
-            #     continue
+            if idx <= 2528:
+                continue
             line = line.strip()
             if not line:
                 continue
