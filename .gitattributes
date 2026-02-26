@@ -1,9 +1,10 @@
 HiFi_TTS/HiFi_TTS_data.jsonl filter=lfs diff=lfs merge=lfs -text
 HiFi_TTS/other/audio_token/hifitts_audio_tokens.csv filter=lfs diff=lfs merge=lfs -text
-Total/** filter=lfs diff=lfs merge=lfs -text
 Blizzard/** filter=lfs diff=lfs merge=lfs -text
 audio/** filter=lfs diff=lfs merge=lfs -text
 /LibriSpeech/LibriSpeech-train.jsonl filter=lfs diff=lfs merge=lfs -text
 /LibriSpeech/LibriSpeech-train360.jsonl filter=lfs diff=lfs merge=lfs -text
 /LibriSpeech/LibriSpeech-train-context.jsonl filter=lfs diff=lfs merge=lfs -text
-
+Total/test.jsonl filter=lfs diff=lfs merge=lfs -text
+Total/val.jsonl filter=lfs diff=lfs merge=lfs -text
+Total/train.jsonl filter=lfs diff=lfs merge=lfs -text
